@@ -1,14 +1,16 @@
 import numpy as np
-import matplotlib as plt
+from sklearn.preprocessing import Imputer
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
 
-trainDataFile = "C:\Study\Python_WorkSpace\MLProject\Classification\TrainData1.txt"
-trainLabelFile = "C:\Study\Python_WorkSpace\MLProject\Classification\TrainLabel1.txt"
-testDataFile = "C:\Study\Python_WorkSpace\MLProject\Classification\TestData1.txt"
+
+trainDataFile = "Classification\TrainData1.txt"
+trainLabelFile = "Classification\TrainLabel1.txt"
+testDataFile = "Classification\TestData1.txt"
 
 trainData = []
 trainLabel = []
 testData = []
-
 
 count = 0
 
@@ -24,7 +26,7 @@ with open(trainDataFile,'r') as file:
             else:
                 tmp.append(-1)
                 count +=1
-        trainData.append(data)
+        trainData.append(tmp)
 print(count)
 
 # read train label
@@ -49,14 +51,37 @@ with open(testDataFile,'r') as file:
 
         testData.append(tmp)
 
-print(count)
-trainData = np.array(trainData)
-trainLabel = np.array(trainLabel)
-testData = np.array(testData)
+print(testData)
 
+# fill the missing value with mean
+imr = Imputer(missing_values=-1, strategy='mean', axis=0)
+imr = imr.fit(trainData)
+trainData = imr.transform(trainData)
 
 print(trainData)
 
+train_data, test_data,  train_label,test_label = \
+    train_test_split(trainData,trainLabel, test_size=.1)
+
+print(len(train_data))
+print(len(test_data))
 
 
+dt = DecisionTreeClassifier()
+dt.fit(train_data,train_label)
 
+predict = dt.predict(test_data,test_label)
+
+print(predict)
+print(test_label)
+error=0
+
+for x in range(len(predict)):
+    if predict[x]!=test_label[x]:
+        print(x)
+        print((predict[x]))
+        print(test_label[x])
+
+        error +=1
+
+print(error/len(predict))
