@@ -15,15 +15,7 @@ def DTtest(trainData, trainLabel, size):
     train_data, test_data, train_label, test_label = \
         train_test_split(trainData, trainLabel, test_size=size)
 
-    # balance the data
-    params = {'n_estimators': 50, 'max_depth': 4, 'random_state': 0,
-              'class_weight': 'balanced'}
-
-    # one type of decision tree that use for imbalance data set
-    dt = ExtraTreesClassifier(**params)
-    dt.fit(train_data, train_label)
-
-    predict = dt.predict(test_data)
+    predict = decisionTree(train_data,train_label,test_data)
 
     cf = confusion_matrix(test_label,predict)
     print("Confusion Matrix:")
@@ -32,6 +24,17 @@ def DTtest(trainData, trainLabel, size):
     print(accuracy)
     return accuracy
 
+
+def decisionTree(train_data, train_label, test_data):
+    # balance the data
+    params = {'n_estimators': 50, 'max_depth': 4, 'random_state': 0,
+              'class_weight': 'balanced'}
+
+    # one type of decision tree that use for imbalance data set
+    dt = ExtraTreesClassifier(**params)
+    dt.fit(train_data, train_label)
+    predict = dt.predict(test_data)
+    return predict
 
 def read_data_file(datafile):
     """
@@ -87,10 +90,15 @@ imr = Imputer(missing_values=-1, strategy='mean', axis=0)
 imr = imr.fit(trainData)
 trainData = imr.transform(trainData)
 
+# use k-fold method to calculate average accuracy of DT
 accuracy = 0
-length = 15
-size = .25
+length = 50
+size = .20
 for i in range(length):
    accuracy += DTtest(trainData, trainLabel, size)
 
 print("Average Accuracy",accuracy/length)
+
+# this is the decision tree method run on final test dataset, the final_test_data_predict is the predict label for test dataset
+final_test_data_predict = decisionTree(trainData,trainLabel,testData)
+print(final_test_data_predict)
