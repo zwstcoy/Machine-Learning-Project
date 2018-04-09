@@ -52,7 +52,7 @@ def read_data_file(datafile, token):
                     x = float(x)
                     tmp.append(x)
                 else:
-                    tmp.append('1.00000000000000e+99')
+                    tmp.append(1e+99)
             dataset.append(tmp)
     return dataset
 
@@ -70,13 +70,13 @@ def read_label_file(datafile):
 
 
 # read files
-trainDataFile = "Classification\TrainData3.txt"
-trainLabelFile = "Classification\TrainLabel3.txt"
-testDataFile = "Classification\TestData3.txt"
+trainDataFile = "Classification\TrainData1.txt"
+trainLabelFile = "Classification\TrainLabel1.txt"
+testDataFile = "Classification\TestData1.txt"
 
 trainData = read_data_file(trainDataFile, '\t')
 trainLabel = read_label_file(trainLabelFile)
-testData = read_data_file(testDataFile, ',')
+testData = read_data_file(testDataFile, '\t')
 
 label_tabel = [0]*10
 # count number for each label
@@ -85,14 +85,20 @@ for x in trainLabel:
 print("Number of each label")
 print(label_tabel)
 
-# fill the missing value with mean
-imr = Imputer(missing_values=1.00000000000000e+99, strategy='mean', axis=0)
+# fill the missing value with mean value in the column
+imr = Imputer(missing_values=1e+99, strategy='mean', axis=0)
 imr = imr.fit(trainData)
 trainData = imr.transform(trainData)
 
+# fill missing value in testdata with mean value in the column
+imr = Imputer(missing_values=1e+99, strategy='mean', axis=0)
+imr = imr.fit(testData)
+testData = imr.transform(testData)
+
+
 # use k-fold method to calculate average accuracy of DT
 accuracy = 0
-length = 1
+length = 10
 size = .20
 for i in range(length):
    accuracy += DTtest(trainData, trainLabel, size)
