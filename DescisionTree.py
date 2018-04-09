@@ -27,8 +27,8 @@ def DTtest(trainData, trainLabel, size):
 
 def decisionTree(train_data, train_label, test_data):
     # balance the data
-    params = {'n_estimators': 20, 'max_depth': 4, 'random_state': 0,
-              'class_weight': 'balanced'}
+    params = {'n_estimators': 100, 'random_state': 0,
+              'class_weight': 'balanced', 'min_samples_split': .2 }
 
     # one type of decision tree that use for imbalance data set
     dt = ExtraTreesClassifier(**params)
@@ -44,14 +44,15 @@ def read_data_file(datafile, token):
     dataset = []
     with open(datafile, 'r') as file:
         for line in file:
-            data = line[:-1].split('\t')
+            #split each word by token
+            data = line[:-1].split(token)
             tmp = []
             for x in data:
-                if x != '1.00000000000000e+99' and x != "":
-                    x = int(x)
+                if x != "":
+                    x = float(x)
                     tmp.append(x)
                 else:
-                    tmp.append(-1)
+                    tmp.append('1.00000000000000e+99')
             dataset.append(tmp)
     return dataset
 
@@ -69,30 +70,29 @@ def read_label_file(datafile):
 
 
 # read files
-trainDataFile = "Classification\TrainData1.txt"
-trainLabelFile = "Classification\TrainLabel1.txt"
-testDataFile = "Classification\TestData1.txt"
+trainDataFile = "Classification\TrainData3.txt"
+trainLabelFile = "Classification\TrainLabel3.txt"
+testDataFile = "Classification\TestData3.txt"
 
 trainData = read_data_file(trainDataFile, '\t')
 trainLabel = read_label_file(trainLabelFile)
-testData = read_data_file(testDataFile,'\t')
+testData = read_data_file(testDataFile, ',')
 
-label_tabel = [0]*5
+label_tabel = [0]*10
 # count number for each label
 for x in trainLabel:
     label_tabel[int(x)-1] += 1
 print("Number of each label")
 print(label_tabel)
 
-
 # fill the missing value with mean
-imr = Imputer(missing_values=-1, strategy='mean', axis=0)
+imr = Imputer(missing_values=1.00000000000000e+99, strategy='mean', axis=0)
 imr = imr.fit(trainData)
 trainData = imr.transform(trainData)
 
 # use k-fold method to calculate average accuracy of DT
 accuracy = 0
-length = 20
+length = 1
 size = .20
 for i in range(length):
    accuracy += DTtest(trainData, trainLabel, size)
