@@ -15,7 +15,7 @@ def DTtest(trainData, trainLabel, size):
     train_data, test_data, train_label, test_label = \
         train_test_split(trainData, trainLabel, test_size=size)
 
-    predict = decisionTree(train_data,train_label,test_data)
+    predict = decisionTree(train_data, train_label, test_data)
 
     cf = confusion_matrix(test_label,predict)
     print("Confusion Matrix:")
@@ -27,7 +27,7 @@ def DTtest(trainData, trainLabel, size):
 
 def decisionTree(train_data, train_label, test_data):
     # balance the data
-    params = {'n_estimators': 50, 'max_depth': 4, 'random_state': 0,
+    params = {'n_estimators': 20, 'max_depth': 4, 'random_state': 0,
               'class_weight': 'balanced'}
 
     # one type of decision tree that use for imbalance data set
@@ -36,7 +36,7 @@ def decisionTree(train_data, train_label, test_data):
     predict = dt.predict(test_data)
     return predict
 
-def read_data_file(datafile):
+def read_data_file(datafile, token):
     """
     :param datafile:
     :return: 2d array
@@ -48,7 +48,7 @@ def read_data_file(datafile):
             tmp = []
             for x in data:
                 if x != '1.00000000000000e+99' and x != "":
-                    x = float(x)
+                    x = int(x)
                     tmp.append(x)
                 else:
                     tmp.append(-1)
@@ -73,9 +73,9 @@ trainDataFile = "Classification\TrainData1.txt"
 trainLabelFile = "Classification\TrainLabel1.txt"
 testDataFile = "Classification\TestData1.txt"
 
-trainData = read_data_file(trainDataFile)
+trainData = read_data_file(trainDataFile, '\t')
 trainLabel = read_label_file(trainLabelFile)
-testData = read_data_file(testDataFile)
+testData = read_data_file(testDataFile,'\t')
 
 label_tabel = [0]*5
 # count number for each label
@@ -92,7 +92,7 @@ trainData = imr.transform(trainData)
 
 # use k-fold method to calculate average accuracy of DT
 accuracy = 0
-length = 50
+length = 20
 size = .20
 for i in range(length):
    accuracy += DTtest(trainData, trainLabel, size)
@@ -101,4 +101,5 @@ print("Average Accuracy",accuracy/length)
 
 # this is the decision tree method run on final test dataset, the final_test_data_predict is the predict label for test dataset
 final_test_data_predict = decisionTree(trainData,trainLabel,testData)
+
 print(final_test_data_predict)
