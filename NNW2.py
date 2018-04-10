@@ -44,7 +44,7 @@ def read_data_file(datafile, token):
             data = line[:-1].split(token)
             tmp = []
             for x in data:
-                if x != "":
+                if x != '' and x != '1.00000000000000e+99':
                     x = float(x)
                     tmp.append(x)
                 else:
