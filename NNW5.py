@@ -25,9 +25,8 @@ def NNWTest(trainData, trainLabel, size=.25):
 
 
 def NNW(train_data, train_label, test_data):
-    nnw = MLPClassifier(solver='lbfgs',alpha=1e-5,
-                    hidden_layer_sizes=(50, 50, 50),
-                        random_state=1)
+    nnw = MLPClassifier(activation ='logistic', solver='lbfgs',alpha=1e-5,hidden_layer_sizes=(100, 100, 100,100),random_state=1)
+
     nnw.fit(train_data, train_label)
     return nnw.predict(test_data)
 
@@ -95,11 +94,12 @@ testData = imr.transform(testData)
 
 # use k-fold method to calculate average accuracy of DT
 accuracy = 0
-length = 1
-size = .25
+length = 10
+size = .30
 for i in range(length):
    accuracy += NNWTest(trainData, trainLabel, size)
 
 print("Average Accuracy",accuracy/length)
 
-print(NNW(trainData, trainLabel, testData))
+final_test_data_predict = NNW(trainData, trainLabel, testData)
+print([x for x in final_test_data_predict])

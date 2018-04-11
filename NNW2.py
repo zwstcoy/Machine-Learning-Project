@@ -86,7 +86,7 @@ imr = imr.fit(trainData)
 trainData = imr.transform(trainData)
 
 # fill missing value in testdata with mean value in the column
-imr = Imputer(missing_values=1000000000, strategy='mean', axis=0)
+imr = Imputer(missing_values=1e+99, strategy='mean', axis=0)
 imr = imr.fit(testData)
 testData = imr.transform(testData)
 
