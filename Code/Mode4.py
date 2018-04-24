@@ -5,7 +5,7 @@ from sklearn.neural_network import MLPClassifier
 from scipy.stats import mode
 
 def logreg(train_data, train_label, test_data):
-    log = LogisticRegression(solver='newton-cg', class_weight='balanced', multi_class='multinomial', max_iter=1000)
+    log = LogisticRegression(solver='newton-cg', class_weight='balanced', multi_class='multinomial', max_iter=500)
     log.fit(train_data, train_label)
     return log.predict(test_data)
 
@@ -17,7 +17,7 @@ def NNW(train_data, train_label, test_data):
 
 def decisionTree(train_data, train_label, test_data):
     # balance the data
-    params = {'n_estimators': 500, 'random_state': 0,
+    params = {'n_estimators': 200, 'random_state': 0,
               'class_weight': 'balanced', 'min_samples_split': .1 }
 
     # one type of decision tree that use for imbalance data set
@@ -111,6 +111,9 @@ m = list(mode([dt_1, dt_2, dt_3, dt_4, dt_5, nnw_1, nnw_2, nnw_3, nnw_4, nnw_5, 
                log_2, log_3, log_4, log_5]))
 print(m[0])
 
-
+result_file = open('Zheng_Ho_Classification14.txt', 'w')
+for item in m[0][0]:
+    print(item)
+    result_file.write("%s \t" % item)
 
 

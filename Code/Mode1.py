@@ -107,4 +107,9 @@ log_5 = logreg(trainData, trainLabel, testData)
 
 m = list(mode([dt_1, dt_2, dt_3, dt_4, dt_5, nnw_1, nnw_2, nnw_3, nnw_4, nnw_5, log_1,
                log_2, log_3, log_4, log_5]))
-print(m[0])
+print(m[0][0])
+result_file = open('Zheng_Ho_Classification11.txt', 'w')
+
+for item in m[0][0]:
+    print(item)
+    result_file.write("%s \t" % item)

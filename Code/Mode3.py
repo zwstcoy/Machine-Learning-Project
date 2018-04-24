@@ -3,6 +3,31 @@ from sklearn.preprocessing import Imputer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 from scipy.stats import mode
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+
+
+def Test(trainData, trainLabel, size=.25):
+    """
+    :param trainData:2d array
+    :param trainLabel: 1d array
+    :param size: .2-.3
+    :return: accuracy
+    """
+    train_data, test_data, train_label, test_label = \
+        train_test_split(trainData, trainLabel, test_size=size)
+
+    predictNNW = NNW(train_data, train_label, test_data)
+    predictDT = decisionTree(train_data, train_label, test_data)
+    predictLR = logreg(train_data, train_label, test_data)
+
+    accuracyNNW = accuracy_score(test_label, predictNNW)
+    accuracyDT = accuracy_score(test_label, predictDT)
+    accuracyLR = accuracy_score(test_label, predictLR)
+    accuracy = (accuracyNNW+accuracyDT+accuracyLR)/3
+    print(accuracy)
+    return accuracy
 
 def NNW(train_data, train_label, test_data):
     nnw = MLPClassifier(activation ='logistic', solver='lbfgs',alpha=1e-5,hidden_layer_sizes=(100, 100, 100),random_state=1)
@@ -82,6 +107,17 @@ imr = Imputer(missing_values=1000000000, strategy='mean', axis=0)
 imr = imr.fit(testData)
 testData = imr.transform(testData)
 
+
+# use k-fold method to calculate average accuracy of DT
+accuracy = 0
+length = 10
+size = .20
+#for i in range(length):
+  # accuracy += Test(trainData, trainLabel, size)
+#print("Average Accuracy",accuracy/length)
+
+
+
 # DT FINAL TEST RESULT
 dt_1 = decisionTree(trainData,trainLabel,testData)
 dt_2 = decisionTree(trainData,trainLabel,testData)
@@ -110,5 +146,9 @@ log_5 = logreg(trainData, trainLabel, testData)
 
 m = list(mode([dt_1, dt_2, dt_3, dt_4, dt_5, nnw_1, nnw_2, nnw_3, nnw_4, nnw_5, log_1,
                log_2, log_3, log_4, log_5]))
-print(m[0])
+print(m[0][0])
 
+result_file = open('Zheng_Ho_Classification13.txt', 'w')
+for item in m[0][0]:
+    print(item)
+    result_file.write("%s \t" % item)
