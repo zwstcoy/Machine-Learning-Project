@@ -130,8 +130,12 @@ result_file1 = open('Zheng_Ho_MissingResult1.txt', 'w')
 result_file2 = open('Zheng_Ho_MissingResult2.txt', 'w')
 
 for item in final1:
-   result_file1.write("%s\n" % item)
+    for x in item:
+        result_file1.write("%s\t" % x)
+    result_file1.write("\n")
 
 for item in final2:
-    result_file1.write("%s\n" % item)
+    for x in item:
+        result_file2.write("%s\t" % x)
+    result_file2.write("\n")
 
